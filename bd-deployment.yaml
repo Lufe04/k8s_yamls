@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      securityContext:
+        fsGroup: 999 
+      containers:
+        - name: postgres
+          image: postgres:15.0
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "bdnames"
+            - name: POSTGRES_USER
+              value: "names"
+            - name: POSTGRES_PASSWORD
+              value: "names"
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
+          volumeMounts:
+            - name: bd-storage  # Usa el mismo PVC de app1
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: "250m"  # CPU mínima reservada
+              memory: "512Mi"  # RAM mínima reservada
+            limits:
+              cpu: "500m"  # CPU máxima permitida
+              memory: "1Gi"  # RAM máxima permitida
+      volumes:
+        - name: bd-storage
+          persistentVolumeClaim:
+            claimName: bd-pvc  # PVC ya existente
