@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: app1
-        image: sbonilla284/app1:3.2
+        image: sbonilla284/app1:3.5
         ports:
           - containerPort: 8080
         resources:
@@ -24,7 +24,7 @@ spec:
             cpu: "250m"
         startupProbe:
           httpGet:
-            path: /api
+            path: /api/
             port: 8080
           initialDelaySeconds: 35
           periodSeconds: 10         # Reintenta cada 5s
